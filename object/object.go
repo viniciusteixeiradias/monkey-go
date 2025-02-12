@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"monkey/ast"
+	"strings"
 )
 
 type ObjectType string
@@ -17,6 +18,7 @@ const (
 	FUNCTION_OBJ     = "FUNCTION"
 	STRING_OBJ       = "STRING"
 	BUILTIN_OBJ      = "BUILTIN"
+	ARRAY_OBJ        = "ARRAY"
 )
 
 type Object interface {
@@ -98,3 +100,24 @@ type BuiltIn struct {
 
 func (b *BuiltIn) Type() ObjectType { return BUILTIN_OBJ }
 func (b *BuiltIn) Inspect() string  { return "builtin function" }
+
+type Array struct {
+	Elements []Object
+}
+
+func (ao *Array) Type() ObjectType { return ARRAY_OBJ }
+func (ao *Array) Inspect() string {
+	var out bytes.Buffer
+
+	elements := []string{}
+
+	for _, el := range ao.Elements {
+		elements = append(elements, el.Inspect())
+	}
+
+	out.WriteString("[")
+	out.WriteString(strings.Join(elements, ", "))
+	out.WriteString("]")
+
+	return out.String()
+}
